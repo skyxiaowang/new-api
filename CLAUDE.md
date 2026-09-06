@@ -1,4 +1,4 @@
-# CLAUDE.md — Project Conventions for new-api
+# CLAUDE.md — Project Conventions for ModelSet AI 平台
 
 ## MANDATORY: Read AGENTS.md with the Read tool
 

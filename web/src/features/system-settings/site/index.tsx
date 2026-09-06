@@ -26,7 +26,7 @@ import {
 
 const defaultSiteSettings: SiteSettings = {
   Notice: '',
-  SystemName: 'New API',
+  SystemName: 'ModelSet AI 平台',
   Logo: '',
   Footer: '',
   About: '',

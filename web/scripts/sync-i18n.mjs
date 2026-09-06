@@ -22,12 +22,6 @@ import path from 'node:path'
 // This script is executed from the web/ package root (see package.json script).
 const LOCALES_DIR = path.resolve('src/i18n/locales')
 const FALLBACK_COMPARE_LOCALE = 'en' // used for "still English" detection only
-const OBFUSCATED_KEYS = [
-  {
-    runtime: ['footer', 'new' + 'api', 'projectAttributionSuffix'].join('.'),
-    serialized: 'footer.new\\u0061pi.projectAttributionSuffix',
-  },
-]
 
 const BRAND_AND_LITERAL_KEYS = new Set([
   '1M token',
@@ -57,7 +51,6 @@ const BRAND_AND_LITERAL_KEYS = new Set([
   'Gemini Image 4K',
   'GitHub',
   'Jimeng',
-  'JustSong',
   'LingYiWanWu',
   'LinuxDO',
   'MjProxy',
@@ -66,20 +59,15 @@ const BRAND_AND_LITERAL_KEYS = new Set([
   'Mistral',
   'MokaAI',
   'Moonshot',
-  'New API',
-  'New API &lt;noreply@example.com&gt;',
-  'NewAPI',
   'OAuth Client Secret',
   'OhMyGPT',
   'Ollama',
-  'One API',
   'OpenAI',
   'OpenAIMax',
   'OpenRouter',
   'Pancake',
   'Passkey',
   'Perplexity',
-  'QuantumNous',
   'Quota:',
   'Replicate',
   'SiliconFlow',
@@ -121,11 +109,7 @@ function isPlainObject(v) {
 }
 
 function stableStringify(obj) {
-  let text = JSON.stringify(obj, null, 2)
-  for (const key of OBFUSCATED_KEYS) {
-    text = text.replaceAll(`"${key.runtime}":`, `"${key.serialized}":`)
-  }
-  return text + '\n'
+  return JSON.stringify(obj, null, 2) + '\n'
 }
 
 function countLeafKeys(obj) {
