@@ -44,7 +44,7 @@ import { OAuthProviders } from '@/features/auth/components/oauth-providers'
 import { registerFormSchema } from '@/features/auth/constants'
 import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect'
 import { useEmailVerification } from '@/features/auth/hooks/use-email-verification'
-import { useTurnstile } from '@/features/auth/hooks/use-turnstile'
+import { useTurnstile } from '@/hooks/use-turnstile'
 import {
   getAffiliateCode,
   saveAffiliateCode,

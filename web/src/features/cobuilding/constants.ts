@@ -28,7 +28,7 @@ export const CO_BUILDING_MIN_REWARD = 1
 export const CO_BUILDING_MAX_REWARD = 1000
 
 /** 官网链接（活动规则中要求贴文包含） */
-export const CO_BUILDING_SITE_URL = 'https://ai.modelset.top'
+export const CO_BUILDING_SITE_URL = 'https://modelset.top'
 
 export type StatusConfig = {
   value: CoBuildingStatus
@@ -118,7 +118,8 @@ export const CO_BUILDING_TYPE_OPTIONS = [
 /** 成功/错误消息（仅存 i18n 键，展示时必须经过 t()） */
 export const SUCCESS_MESSAGES = {
   SUBMITTED: 'Submitted successfully, please wait for review',
-  REVIEWED: 'Review submitted',
+  APPROVED: 'Approved and reward granted',
+  REJECTED: 'Submission rejected',
 } as const
 
 export const ERROR_MESSAGES = {

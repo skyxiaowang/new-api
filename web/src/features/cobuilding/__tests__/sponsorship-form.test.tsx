@@ -35,6 +35,7 @@ await i18n.use(initReactI18next).init({
 type ApiMethod = (url: string, data?: unknown) => Promise<{ data: unknown }>
 type MockableApi = {
   post: ApiMethod
+  get: (url: string) => Promise<{ data: unknown }>
 }
 type SubmittedPost = {
   url: string
@@ -43,6 +44,7 @@ type SubmittedPost = {
 
 const apiClient = api as unknown as MockableApi
 const originalPost = apiClient.post
+const originalGet = apiClient.get
 const submittedPosts: SubmittedPost[] = []
 
 function renderForm(): void {
@@ -82,7 +84,11 @@ function submitForm(): void {
 
 afterEach(() => {
   apiClient.post = originalPost
+  apiClient.get = originalGet
   submittedPosts.length = 0
+  delete window.turnstile
+  // useStatus 会把 status 缓存进 localStorage 作为下次初始值，测试间必须清掉
+  window.localStorage.removeItem('status')
 })
 
 describe('sponsorship form support type cards', () => {
@@ -135,5 +141,77 @@ describe('sponsorship form support type cards', () => {
     expect(payload.support_type).toBe(3)
     expect(typeof payload.support_type).toBe('number')
     expect(screen.queryByText('Invalid input')).toBeNull()
+  })
+})
+
+describe('sponsorship form turnstile integration', () => {
+  function mockTurnstileEnabledStatus(): void {
+    apiClient.get = async () => ({
+      data: {
+        success: true,
+        data: { turnstile_check: true, turnstile_site_key: 'test-site-key' },
+      },
+    })
+  }
+
+  test('blocks submission until verified and sends the token as a query parameter', async () => {
+    mockTurnstileEnabledStatus()
+    apiClient.post = async (url, data) => {
+      submittedPosts.push({ url, data })
+      return { data: { success: true, message: '', data: null } }
+    }
+    // 先注册 widget：仅捕获回调，不立即放行，时序可控
+    let verifyCallback: ((token: string) => void) | undefined
+    window.turnstile = {
+      render: (_element, options) => {
+        verifyCallback = (options as { callback: (t: string) => void })
+          .callback
+      },
+    }
+    renderForm()
+    fillRequiredFields()
+
+    // widget 已渲染（回调就绪）、验证完成前提交按钮禁用
+    await waitFor(() => expect(verifyCallback).toBeDefined())
+    const submitButton = screen.getByRole('button', {
+      name: 'Submit sponsorship application',
+    })
+    expect(submitButton).toBeDisabled()
+
+    // 通过 widget 回调拿到 token 后按钮解锁，提交时 token 走 query
+    verifyCallback?.('test-token')
+    await waitFor(() => expect(submitButton).not.toBeDisabled())
+
+    submitForm()
+
+    await waitFor(() => expect(submittedPosts.length).toBe(1))
+    expect(submittedPosts[0]?.url).toBe(
+      '/api/user/cobuilding?turnstile=test-token'
+    )
+  })
+
+  test('renders no widget and posts a clean URL when turnstile is disabled', async () => {
+    apiClient.get = async () => ({
+      data: {
+        success: true,
+        data: { turnstile_check: false, turnstile_site_key: '' },
+      },
+    })
+    apiClient.post = async (url, data) => {
+      submittedPosts.push({ url, data })
+      return { data: { success: true, message: '', data: null } }
+    }
+    renderForm()
+    fillRequiredFields()
+
+    const submitButton = screen.getByRole('button', {
+      name: 'Submit sponsorship application',
+    })
+    expect(submitButton).not.toBeDisabled()
+
+    submitForm()
+
+    await waitFor(() => expect(submittedPosts.length).toBe(1))
+    expect(submittedPosts[0]?.url).toBe('/api/user/cobuilding')
   })
 })

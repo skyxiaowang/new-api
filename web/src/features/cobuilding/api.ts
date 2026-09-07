@@ -60,11 +60,15 @@ export async function getAllCoBuildings(
   return res.data
 }
 
-/** 提交共建计划申请 */
+/** 提交共建计划申请（Turnstile 启用时经 query 携带 token，后端 TurnstileCheck 读取） */
 export async function submitCoBuilding(
-  payload: SubmitCoBuildingPayload
+  payload: SubmitCoBuildingPayload,
+  turnstileToken?: string
 ): Promise<ApiResponse<CoBuildingRecord>> {
-  const res = await api.post('/api/user/cobuilding', payload)
+  const url = turnstileToken
+    ? `/api/user/cobuilding?turnstile=${encodeURIComponent(turnstileToken)}`
+    : '/api/user/cobuilding'
+  const res = await api.post(url, payload)
   return res.data
 }
 

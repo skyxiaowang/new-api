@@ -18,9 +18,11 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowRight, Link2, Loader2 } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { Turnstile } from '@/components/turnstile'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -36,6 +38,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useTurnstile } from '@/hooks/use-turnstile'
 import { useSubmitCoBuilding } from '../hooks/use-co-building'
 import { xPostFormSchema, type XPostFormValues } from '../lib/schema'
 import { CO_BUILDING_TYPE } from '../types'
@@ -44,6 +47,15 @@ import { CO_BUILDING_TYPE } from '../types'
 export function XPostForm() {
   const { t } = useTranslation()
   const submit = useSubmitCoBuilding()
+  const {
+    isTurnstileEnabled,
+    turnstileSiteKey,
+    turnstileToken,
+    setTurnstileToken,
+    validateTurnstile,
+  } = useTurnstile()
+  const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0)
+  const turnstileReady = !isTurnstileEnabled || Boolean(turnstileToken)
 
   const form = useForm<XPostFormValues>({
     resolver: zodResolver(xPostFormSchema),
@@ -53,13 +65,25 @@ export function XPostForm() {
   })
 
   const onSubmit = form.handleSubmit((values) => {
+    if (!validateTurnstile()) return
     submit.mutate(
-      { type: CO_BUILDING_TYPE.X_POST, post_url: values.post_url.trim() },
+      {
+        payload: {
+          type: CO_BUILDING_TYPE.X_POST,
+          post_url: values.post_url.trim(),
+        },
+        turnstileToken: turnstileToken || undefined,
+      },
       {
         onSuccess: (response) => {
           if (response.success) {
             form.reset()
           }
+        },
+        onSettled: () => {
+          // token 一次性，提交后重挂 widget 重新获取
+          setTurnstileToken('')
+          setTurnstileWidgetKey((current) => current + 1)
         },
       }
     )
@@ -128,9 +152,19 @@ export function XPostForm() {
               </div>
             </dl>
 
+            {isTurnstileEnabled && (
+              <div>
+                <Turnstile
+                  key={turnstileWidgetKey}
+                  siteKey={turnstileSiteKey}
+                  onVerify={setTurnstileToken}
+                />
+              </div>
+            )}
+
             <Button
               type='submit'
-              disabled={submit.isPending}
+              disabled={submit.isPending || !turnstileReady}
               className='w-full sm:w-auto sm:min-w-44'
             >
               {submit.isPending ? (

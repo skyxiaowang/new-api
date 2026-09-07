@@ -80,43 +80,50 @@ export function CoBuilding(props: CoBuildingProps) {
   }
 
   return (
-    <SectionPageLayout>
-      <SectionPageLayout.Title>{t('Co-building Plan')}</SectionPageLayout.Title>
-      <SectionPageLayout.Content>
-        <div className='mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-5'>
-          <EntryCards tab={tab} isAdmin={isAdmin} onSelect={handleSelectTab} />
+    <>
+      <SectionPageLayout>
+        <SectionPageLayout.Title>
+          {t('Co-building Plan')}
+        </SectionPageLayout.Title>
+        <SectionPageLayout.Content>
+          <div className='mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-5'>
+            <EntryCards tab={tab} isAdmin={isAdmin} onSelect={handleSelectTab} />
 
-          {tab === 'x-post' && (
-            <div className='grid gap-4 sm:gap-5 lg:grid-cols-3 lg:items-start'>
-              <div className='lg:col-span-2'>
-                <XPostForm />
+            {tab === 'x-post' && (
+              <div className='grid gap-4 sm:gap-5 lg:grid-cols-3 lg:items-start'>
+                <div className='lg:col-span-2'>
+                  <XPostForm />
+                </div>
+                <RulesCard title={t('Activity Rules')} rules={xPostRules} />
               </div>
-              <RulesCard title={t('Activity Rules')} rules={xPostRules} />
-            </div>
-          )}
+            )}
 
-          {tab === 'sponsorship' && (
-            <div className='grid gap-4 sm:gap-5 lg:grid-cols-3 lg:items-start'>
-              <div className='lg:col-span-2'>
-                <SponsorshipForm />
+            {tab === 'sponsorship' && (
+              <div className='grid gap-4 sm:gap-5 lg:grid-cols-3 lg:items-start'>
+                <div className='lg:col-span-2'>
+                  <SponsorshipForm />
+                </div>
+                <RulesCard
+                  title={t('Sponsorship Terms')}
+                  rules={sponsorshipRules}
+                />
               </div>
-              <RulesCard title={t('Sponsorship Terms')} rules={sponsorshipRules} />
-            </div>
-          )}
+            )}
 
-          {tab === 'review' && isAdmin ? (
-            <SubmissionsList mode='all' onReview={handleReview} />
-          ) : (
-            <SubmissionsList mode='self' />
-          )}
-        </div>
-      </SectionPageLayout.Content>
+            {tab === 'review' && isAdmin ? (
+              <SubmissionsList key='all' mode='all' onReview={handleReview} />
+            ) : (
+              <SubmissionsList key='self' mode='self' />
+            )}
+          </div>
+        </SectionPageLayout.Content>
+      </SectionPageLayout>
 
       <ReviewDialog
         record={reviewRecord}
         open={reviewOpen}
         onOpenChange={setReviewOpen}
       />
-    </SectionPageLayout>
+    </>
   )
 }

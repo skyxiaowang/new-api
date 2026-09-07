@@ -29,6 +29,12 @@ import {
 import { SUCCESS_MESSAGES } from '../constants'
 import type { SubmitCoBuildingPayload } from '../types'
 
+type SubmitCoBuildingVariables = {
+  payload: SubmitCoBuildingPayload
+  /** Turnstile 启用时的验证 token（一次性） */
+  turnstileToken?: string
+}
+
 export type CoBuildingListQuery = {
   scope: 'self' | 'all'
   page: number
@@ -76,8 +82,8 @@ export function useSubmitCoBuilding() {
   const { t } = useTranslation()
 
   return useMutation({
-    mutationFn: (payload: SubmitCoBuildingPayload) =>
-      submitCoBuilding(payload),
+    mutationFn: (variables: SubmitCoBuildingVariables) =>
+      submitCoBuilding(variables.payload, variables.turnstileToken),
     onSuccess: (response) => {
       if (response.success) {
         toast.success(t(SUCCESS_MESSAGES.SUBMITTED))
@@ -87,16 +93,20 @@ export function useSubmitCoBuilding() {
   })
 }
 
-/** 管理员审核 */
+/** 管理员审核：按审核结果提示（通过=奖励已发放；不通过=已驳回） */
 export function useReviewCoBuilding() {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
   return useMutation({
     mutationFn: reviewCoBuilding,
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       if (response.success) {
-        toast.success(t(SUCCESS_MESSAGES.REVIEWED))
+        toast.success(
+          variables.approve
+            ? t(SUCCESS_MESSAGES.APPROVED)
+            : t(SUCCESS_MESSAGES.REJECTED)
+        )
         void queryClient.invalidateQueries({ queryKey: ['cobuilding'] })
       }
     },

@@ -24,9 +24,11 @@ import {
   Heart,
   Loader2,
 } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { Turnstile } from '@/components/turnstile'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -42,6 +44,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
+import { useTurnstile } from '@/hooks/use-turnstile'
 import { CO_BUILDING_SUPPORT_OPTIONS } from '../constants'
 import { useSubmitCoBuilding } from '../hooks/use-co-building'
 import {
@@ -56,6 +59,15 @@ const SUPPORT_ICONS = [Gift, Heart, Award] as const
 export function SponsorshipForm() {
   const { t } = useTranslation()
   const submit = useSubmitCoBuilding()
+  const {
+    isTurnstileEnabled,
+    turnstileSiteKey,
+    turnstileToken,
+    setTurnstileToken,
+    validateTurnstile,
+  } = useTurnstile()
+  const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0)
+  const turnstileReady = !isTurnstileEnabled || Boolean(turnstileToken)
 
   const form = useForm<SponsorshipFormValues>({
     resolver: zodResolver(sponsorshipFormSchema),
@@ -72,13 +84,22 @@ export function SponsorshipForm() {
   })
 
   const onSubmit = form.handleSubmit((values) => {
+    if (!validateTurnstile()) return
     submit.mutate(
-      { type: CO_BUILDING_TYPE.SPONSORSHIP, ...values },
+      {
+        payload: { type: CO_BUILDING_TYPE.SPONSORSHIP, ...values },
+        turnstileToken: turnstileToken || undefined,
+      },
       {
         onSuccess: (response) => {
           if (response.success) {
             form.reset()
           }
+        },
+        onSettled: () => {
+          // token 一次性，提交后重挂 widget 重新获取
+          setTurnstileToken('')
+          setTurnstileWidgetKey((current) => current + 1)
         },
       }
     )
@@ -290,9 +311,19 @@ export function SponsorshipForm() {
               )}
             />
 
+            {isTurnstileEnabled && (
+              <div>
+                <Turnstile
+                  key={turnstileWidgetKey}
+                  siteKey={turnstileSiteKey}
+                  onVerify={setTurnstileToken}
+                />
+              </div>
+            )}
+
             <Button
               type='submit'
-              disabled={submit.isPending}
+              disabled={submit.isPending || !turnstileReady}
               className='w-full sm:w-auto sm:min-w-52'
             >
               {submit.isPending ? (

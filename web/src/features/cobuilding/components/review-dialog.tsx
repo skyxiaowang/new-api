@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Loader2, X } from 'lucide-react'
-import { useEffect } from 'react'
+import { Fragment, useEffect, type ReactNode } from 'react'
 import { type Resolver, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import dayjs from '@/lib/dayjs'
 import { cn } from '@/lib/utils'
 import {
   CO_BUILDING_MAX_REWARD,
@@ -51,7 +52,7 @@ import {
 } from '../constants'
 import { useReviewCoBuilding } from '../hooks/use-co-building'
 import { reviewFormSchema, type ReviewFormValues } from '../lib/schema'
-import type { CoBuildingRecord } from '../types'
+import { CO_BUILDING_TYPE, type CoBuildingRecord } from '../types'
 
 type ReviewDialogProps = {
   record: CoBuildingRecord | null
@@ -106,21 +107,68 @@ export function ReviewDialog(props: ReviewDialogProps) {
   const supportConfig = props.record
     ? CO_BUILDING_SUPPORT_CONFIG[props.record.support_type]
     : null
-  // 摘要：发帖类显示链接；赞助类显示项目名 + 支持类型
-  let summary = ''
+
+  // 审核弹窗内完整展示用户提交的原始数据，辅助管理员判断
+  const linkContent = (url: string | null) => {
+    if (!url) {
+      return <span className='text-muted-foreground'>-</span>
+    }
+    return (
+      <a
+        href={url}
+        target='_blank'
+        rel='noopener noreferrer'
+        className='text-primary hover:underline'
+      >
+        {url}
+      </a>
+    )
+  }
+
+  const detailRows: { label: string; content: ReactNode }[] = []
   if (props.record) {
-    if (props.record.type === 1 && props.record.post_url) {
-      summary = props.record.post_url
-    } else if (supportConfig) {
-      summary = `${props.record.project_name} · ${t(supportConfig.labelKey)}`
+    if (props.record.type === CO_BUILDING_TYPE.X_POST) {
+      detailRows.push({
+        label: t('X post link'),
+        content: linkContent(props.record.post_url),
+      })
     } else {
-      summary = props.record.project_name
+      detailRows.push(
+        {
+          label: t('Website or project name'),
+          content: props.record.project_name || '-',
+        },
+        {
+          label: t('Contact information'),
+          content: props.record.contact || '-',
+        },
+        {
+          label: t('Website URL'),
+          content: linkContent(props.record.website),
+        },
+        {
+          label: t('GitHub link'),
+          content: linkContent(props.record.github),
+        },
+        {
+          label: t('Support you are applying for'),
+          content: supportConfig ? t(supportConfig.labelKey) : '-',
+        },
+        {
+          label: t('Current scale'),
+          content: props.record.scale || '-',
+        },
+        {
+          label: t('Agree to display our promotional links'),
+          content: props.record.agree_promo ? t('Yes') : t('No'),
+        }
+      )
     }
   }
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className='sm:max-w-md'>
+      <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
           <DialogTitle>{t('Review submission')}</DialogTitle>
           <DialogDescription className='text-left'>
@@ -130,13 +178,44 @@ export function ReviewDialog(props: ReviewDialogProps) {
                   {typeConfig ? t(typeConfig.labelKey) : ''} ·{' '}
                   {props.record.username}
                 </span>
-                <span className='text-muted-foreground break-all text-xs'>
-                  {summary}
+                <span className='text-muted-foreground text-xs'>
+                  {t('Submitted at')}:{' '}
+                  {props.record.created_at
+                    ? dayjs.unix(props.record.created_at).format('YYYY-MM-DD HH:mm')
+                    : '-'}
                 </span>
               </span>
             )}
           </DialogDescription>
         </DialogHeader>
+
+        {props.record && detailRows.length > 0 && (
+          <div className='bg-muted/30 flex flex-col gap-3 rounded-lg border p-4'>
+            <div className='grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-[9rem_1fr]'>
+              {detailRows.map((row) => (
+                <Fragment key={row.label}>
+                  <span className='text-muted-foreground text-xs leading-5'>
+                    {row.label}
+                  </span>
+                  <span className='min-w-0 text-xs leading-5 break-all'>
+                    {row.content}
+                  </span>
+                </Fragment>
+              ))}
+            </div>
+            {props.record.type === CO_BUILDING_TYPE.SPONSORSHIP &&
+              props.record.description && (
+                <div className='flex flex-col gap-1.5'>
+                  <span className='text-muted-foreground text-xs font-medium'>
+                    {t('Project introduction')}
+                  </span>
+                  <p className='max-h-40 overflow-y-auto text-xs leading-relaxed break-all whitespace-pre-wrap'>
+                    {props.record.description}
+                  </p>
+                </div>
+              )}
+          </div>
+        )}
 
         <Form {...form}>
           <form onSubmit={onSubmit} className='flex flex-col gap-5'>

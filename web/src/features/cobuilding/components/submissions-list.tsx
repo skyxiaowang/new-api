@@ -105,7 +105,10 @@ export function SubmissionsList(props: SubmissionsListProps) {
 
   const [page, setPage] = useState(1)
   const [keyword, setKeyword] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>(ALL_FILTER)
+  // 管理员进入审核管理默认只看待审核记录，减少翻找
+  const [statusFilter, setStatusFilter] = useState<string>(
+    isAdminMode ? String(CO_BUILDING_STATUS.PENDING) : ALL_FILTER
+  )
   const [typeFilter, setTypeFilter] = useState<string>(ALL_FILTER)
   const debouncedKeyword = useDebounce(keyword)
 
@@ -183,6 +186,13 @@ export function SubmissionsList(props: SubmissionsListProps) {
               />
             </div>
             <Select
+              items={[
+                { value: ALL_FILTER, label: t('All statuses') },
+                ...CO_BUILDING_STATUS_OPTIONS.map((option) => ({
+                  value: String(option.value),
+                  label: t(option.labelKey),
+                })),
+              ]}
               value={statusFilter}
               onValueChange={(value) => {
                 if (value !== null) handleStatusChange(value)
@@ -201,6 +211,13 @@ export function SubmissionsList(props: SubmissionsListProps) {
               </SelectContent>
             </Select>
             <Select
+              items={[
+                { value: ALL_FILTER, label: t('All types') },
+                ...CO_BUILDING_TYPE_OPTIONS.map((option) => ({
+                  value: String(option.value),
+                  label: t(option.labelKey),
+                })),
+              ]}
               value={typeFilter}
               onValueChange={(value) => {
                 if (value !== null) handleTypeChange(value)
@@ -278,7 +295,21 @@ export function SubmissionsList(props: SubmissionsListProps) {
                           {record.username}
                         </TableCell>
                       )}
-                      <TableCell className='max-w-64 truncate text-sm' title={contentSummary(record)}>
+                      <TableCell
+                        className='max-w-64 truncate text-sm'
+                        title={
+                          record.type === CO_BUILDING_TYPE.X_POST
+                            ? (record.post_url ?? '')
+                            : [
+                                contentSummary(record),
+                                record.contact,
+                                record.scale,
+                                record.description,
+                              ]
+                              .filter(Boolean)
+                              .join(' · ')
+                        }
+                      >
                         {record.type === CO_BUILDING_TYPE.X_POST &&
                         record.post_url ? (
                           <a

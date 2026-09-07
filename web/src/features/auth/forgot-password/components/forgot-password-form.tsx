@@ -40,7 +40,7 @@ import {
   forgotPasswordFormSchema,
   PASSWORD_RESET_COUNTDOWN,
 } from '@/features/auth/constants'
-import { useTurnstile } from '@/features/auth/hooks/use-turnstile'
+import { useTurnstile } from '@/hooks/use-turnstile'
 import { useCountdown } from '@/hooks/use-countdown'
 import { cn } from '@/lib/utils'
 
@@ -83,7 +83,7 @@ export function ForgotPasswordForm({
       } else {
         toast.error(res?.message || t('Failed to send reset email'))
       }
-    } catch (_error) {
+    } catch {
       // Errors are handled by global interceptor
     } finally {
       setIsLoading(false)
