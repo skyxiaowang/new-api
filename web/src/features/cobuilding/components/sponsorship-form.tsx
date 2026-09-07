@@ -42,7 +42,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
-import { CO_BUILDING_SUPPORT_CONFIG } from '../constants'
+import { CO_BUILDING_SUPPORT_OPTIONS } from '../constants'
 import { useSubmitCoBuilding } from '../hooks/use-co-building'
 import {
   sponsorshipFormSchema,
@@ -185,24 +185,15 @@ export function SponsorshipForm() {
                 <FormItem>
                   <FormLabel>{t('Support you are applying for')}</FormLabel>
                   <div className='grid gap-3 sm:grid-cols-3'>
-                    {(
-                      Object.keys(
-                        CO_BUILDING_SUPPORT_CONFIG
-                      ) as unknown as number[]
-                    ).map((value, index) => {
-                      const config =
-                        CO_BUILDING_SUPPORT_CONFIG[value] ??
-                        CO_BUILDING_SUPPORT_CONFIG[
-                          CO_BUILDING_SUPPORT.BALANCE
-                        ]
+                    {CO_BUILDING_SUPPORT_OPTIONS.map((option, index) => {
                       const Icon = SUPPORT_ICONS[index] ?? Gift
-                      const active = field.value === value
+                      const active = field.value === option.value
                       return (
                         <button
-                          key={value}
+                          key={option.value}
                           type='button'
                           aria-pressed={active}
-                          onClick={() => field.onChange(value)}
+                          onClick={() => field.onChange(option.value)}
                           className={cn(
                             'flex flex-col gap-2 rounded-lg border p-3 text-start transition-colors outline-none',
                             'focus-visible:ring-ring/40 focus-visible:ring-2',
@@ -221,10 +212,10 @@ export function SponsorshipForm() {
                             aria-hidden='true'
                           />
                           <span className='text-foreground text-sm font-medium'>
-                            {t(config.labelKey)}
+                            {t(option.labelKey)}
                           </span>
                           <span className='text-muted-foreground text-xs'>
-                            {t(config.descKey)}
+                            {t(option.descKey)}
                           </span>
                         </button>
                       )

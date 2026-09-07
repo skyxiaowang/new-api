@@ -81,6 +81,29 @@ export const CO_BUILDING_SUPPORT_CONFIG: Record<
   },
 }
 
+/** 支持类型选项（value 必须是数字，schema 的 support_type 只放行数字字面量） */
+export const CO_BUILDING_SUPPORT_OPTIONS: {
+  value: number
+  labelKey: string
+  descKey: string
+}[] = [
+  {
+    value: CO_BUILDING_SUPPORT.BALANCE,
+    labelKey: CO_BUILDING_SUPPORT_CONFIG[CO_BUILDING_SUPPORT.BALANCE].labelKey,
+    descKey: CO_BUILDING_SUPPORT_CONFIG[CO_BUILDING_SUPPORT.BALANCE].descKey,
+  },
+  {
+    value: CO_BUILDING_SUPPORT.FULL,
+    labelKey: CO_BUILDING_SUPPORT_CONFIG[CO_BUILDING_SUPPORT.FULL].labelKey,
+    descKey: CO_BUILDING_SUPPORT_CONFIG[CO_BUILDING_SUPPORT.FULL].descKey,
+  },
+  {
+    value: CO_BUILDING_SUPPORT.DISCOUNT,
+    labelKey: CO_BUILDING_SUPPORT_CONFIG[CO_BUILDING_SUPPORT.DISCOUNT].labelKey,
+    descKey: CO_BUILDING_SUPPORT_CONFIG[CO_BUILDING_SUPPORT.DISCOUNT].descKey,
+  },
+]
+
 /** 申请类型展示配置 */
 export const CO_BUILDING_TYPE_CONFIG: Record<number, { labelKey: string }> = {
   [CO_BUILDING_TYPE.X_POST]: { labelKey: 'X Post Activity' },
