@@ -5601,6 +5601,7 @@
     "Your post must include the site link {{url}}": "ポストにはサイトリンク {{url}} を含める必要があります",
     "We prioritize projects with a clear product direction, real user value, or a sustainable operation plan": "明確な製品方向、実際のユーザー価値、継続的な運営計画のあるプロジェクトを優先的に支援します",
     "Support can be $1–$1000 in balance, a full sponsorship covering the tokens your project needs, or an exclusive discount": "支援は $1〜$1000 の残高、プロジェクトに必要なトークンのフルスポンサー、または特別割引です",
-    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "スポンサーシップ受領後、サイト公開時に合意通り当社のプロモーションリンクを掲載してください"
+    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "スポンサーシップ受領後、サイト公開時に合意通り当社のプロモーションリンクを掲載してください",
+    "Only shows orders from the last 30 days": "過去30日間の注文のみ表示されます"
   }
 }

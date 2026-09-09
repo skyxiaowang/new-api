@@ -5601,6 +5601,7 @@
     "Your post must include the site link {{url}}": "Ваш пост должен содержать ссылку на сайт {{url}}",
     "We prioritize projects with a clear product direction, real user value, or a sustainable operation plan": "Мы отдаём приоритет проектам с чётким направлением продукта, реальной пользой для пользователей или планом устойчивого развития",
     "Support can be $1–$1000 in balance, a full sponsorship covering the tokens your project needs, or an exclusive discount": "Поддержка может быть в виде баланса от 1 до 1000 $, полного спонсорства токенов вашего проекта или эксклюзивной скидки",
-    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "Получив спонсорство, при запуске сайта разместите нашу рекламную ссылку, как договорились"
+    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "Получив спонсорство, при запуске сайта разместите нашу рекламную ссылку, как договорились",
+    "Only shows orders from the last 30 days": "Показываются только заказы за последние 30 дней"
   }
 }

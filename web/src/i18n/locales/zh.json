@@ -5601,6 +5601,7 @@
     "Your post must include the site link {{url}}": "贴文中需要包含官网链接 {{url}}",
     "We prioritize projects with a clear product direction, real user value, or a sustainable operation plan": "我们优先支持已经有明确产品方向、真实用户价值或持续运营计划的项目",
     "Support can be $1–$1000 in balance, a full sponsorship covering the tokens your project needs, or an exclusive discount": "支持形式可以是 1–1000 美元余额、覆盖项目所需 token 的全额赞助或专属折扣",
-    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "获得赞助后，网站上线时需要按约定展示我们的推广链接"
+    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "获得赞助后，网站上线时需要按约定展示我们的推广链接",
+    "Only shows orders from the last 30 days": "仅显示最近 30 天的订单"
   }
 }

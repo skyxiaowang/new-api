@@ -5601,6 +5601,7 @@
     "Your post must include the site link {{url}}": "Votre publication doit inclure le lien du site {{url}}",
     "We prioritize projects with a clear product direction, real user value, or a sustainable operation plan": "Nous privilégions les projets ayant une direction produit claire, une valeur réelle pour les utilisateurs ou un plan d'exploitation durable",
     "Support can be $1–$1000 in balance, a full sponsorship covering the tokens your project needs, or an exclusive discount": "Le soutien peut être un solde de 1 à 1000 $, un parrainage complet couvrant les tokens nécessaires à votre projet ou une remise exclusive",
-    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "Après avoir reçu le parrainage, vous devez afficher notre lien promotionnel comme convenu lors de la mise en ligne de votre site"
+    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "Après avoir reçu le parrainage, vous devez afficher notre lien promotionnel comme convenu lors de la mise en ligne de votre site",
+    "Only shows orders from the last 30 days": "Seules les commandes des 30 derniers jours sont affichées"
   }
 }

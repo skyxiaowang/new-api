@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { Search, Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Copy, Check, ChevronLeft, ChevronRight, Info } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -128,7 +128,7 @@ export function BillingHistoryDialog({
               ]}
               value={pageSize.toString()}
               onValueChange={(value) =>
-                value !== null && handlePageSizeChange(parseInt(value))
+                value !== null && handlePageSizeChange(Number.parseInt(value))
               }
             >
               <SelectTrigger className='h-9 w-[92px] sm:w-32'>
@@ -145,12 +145,20 @@ export function BillingHistoryDialog({
             </Select>
           </div>
 
+          {/* Scope notice: user-facing queries are capped to the last 30 days by the backend */}
+          {!isAdmin && (
+            <div className='text-muted-foreground flex items-center gap-1.5 text-xs'>
+              <Info className='h-3.5 w-3.5 shrink-0' aria-hidden='true' />
+              {t('Only shows orders from the last 30 days')}
+            </div>
+          )}
+
           {/* Records List */}
           <div className='max-h-[min(54vh,520px)] overflow-y-auto pr-1'>
             {loading ? (
               <div className='space-y-3'>
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className='rounded-lg border p-3 sm:p-4'>
+                  <div key={`skeleton-${i}`} className='rounded-lg border p-3 sm:p-4'>
                     <div className='flex items-start justify-between'>
                       <div className='flex-1 space-y-2'>
                         <Skeleton className='h-4 w-48' />

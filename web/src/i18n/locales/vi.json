@@ -5601,6 +5601,7 @@
     "Your post must include the site link {{url}}": "Bài viết phải chứa liên kết trang web {{url}}",
     "We prioritize projects with a clear product direction, real user value, or a sustainable operation plan": "Chúng tôi ưu tiên các dự án có hướng sản phẩm rõ ràng, giá trị thực cho người dùng hoặc kế hoạch vận hành bền vững",
     "Support can be $1–$1000 in balance, a full sponsorship covering the tokens your project needs, or an exclusive discount": "Hỗ trợ có thể là số dư 1–1000 $, tài trợ toàn phần token dự án của bạn cần, hoặc giảm giá độc quyền",
-    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "Sau khi nhận tài trợ, khi website hoạt động bạn cần hiển thị liên kết quảng bá của chúng tôi như đã thỏa thuận"
+    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "Sau khi nhận tài trợ, khi website hoạt động bạn cần hiển thị liên kết quảng bá của chúng tôi như đã thỏa thuận",
+    "Only shows orders from the last 30 days": "Chỉ hiển thị đơn hàng trong 30 ngày gần đây"
   }
 }

@@ -5601,6 +5601,7 @@
     "Your post must include the site link {{url}}": "Your post must include the site link {{url}}",
     "We prioritize projects with a clear product direction, real user value, or a sustainable operation plan": "We prioritize projects with a clear product direction, real user value, or a sustainable operation plan",
     "Support can be $1–$1000 in balance, a full sponsorship covering the tokens your project needs, or an exclusive discount": "Support can be $1–$1000 in balance, a full sponsorship covering the tokens your project needs, or an exclusive discount",
-    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live"
+    "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live": "After receiving sponsorship, you need to display our promotional link as agreed when your site goes live",
+    "Only shows orders from the last 30 days": "Only shows orders from the last 30 days"
   }
 }
