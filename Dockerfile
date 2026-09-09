@@ -1,11 +1,15 @@
 FROM oven/bun:1.4.0@sha256:5ff609364c049b54eb0ff560ec96319729a972078ef2c755d758f0c6ef89c2d6 AS builder
 
+# CDN prefix for static assets (e.g. https://bucket.oss-cn-beijing.aliyuncs.com/modelset).
+# Empty = serve assets from the API host itself.
+ARG CDN_URL=
+
 WORKDIR /build/web
 COPY web/package.json web/bun.lock ./
 RUN bun install --frozen-lockfile
 COPY ./web ./
 COPY ./VERSION /build/VERSION
-RUN DISABLE_ESLINT_PLUGIN='true' VITE_REACT_APP_VERSION=$(cat /build/VERSION) bun run build
+RUN DISABLE_ESLINT_PLUGIN='true' VITE_REACT_APP_VERSION=$(cat /build/VERSION) CDN_URL=${CDN_URL} bun run build
 
 FROM golang:1.26.1-alpine@sha256:2389ebfa5b7f43eeafbd6be0c3700cc46690ef842ad962f6c5bd6be49ed82039 AS builder2
 # GOPROXY override for network-restricted build hosts (defaults to the Go default).

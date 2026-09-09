@@ -16,6 +16,9 @@ export default defineConfig(({ envMode }) => {
     'http://localhost:3000'
 
   const isProd = envMode === 'production'
+  // 静态资源 CDN 前缀（如 https://ccvibe.oss-cn-beijing.aliyuncs.com/modelset）：
+  // 仅生产构建生效，js/css/字体指向 CDN；index.html 与 public 根级文件仍由主站托管。
+  const cdnUrl = (process.env.CDN_URL || '').trim().replace(/\/+$/, '')
   const devProxy = Object.fromEntries(
     (['/api', '/v1', '/mj', '/pg'] as const).map((key) => [
       key,
@@ -71,6 +74,7 @@ export default defineConfig(({ envMode }) => {
       proxy: devProxy,
     },
     output: {
+      assetPrefix: isProd && cdnUrl ? `${cdnUrl}/` : '/',
       // Production optimizations
       minify: isProd,
       target: 'web',
